@@ -1,0 +1,70 @@
+---
+title: "Data Wrangling Exercise 2"
+output: html_document
+---
+# Created by Nivedita Ravi Srivats
+
+#Exercise
+#Using R, you'll be handling missing values in this data set, and creating a new data set. Specifically, these are the tasks you need to do:
+#0: Load the data in RStudio
+#Save the data set as a CSV file called titanic_original.csv and load it in RStudio into a data frame.
+
+# Step 1 - Import the csv file using the read.csv command. 
+```{r}
+titanic_original<- read.csv("C:\\Users\\srivats\\Desktop\\Data Wrangling Assignments\\titanic_original.csv")
+```
+
+#1: Port of embarkation
+#The embarked column has some missing values, which are known to correspond to passengers who actually embarked at Southampton. Find the missing values and replace them with S. (Caution: Sometimes a missing value might be read into R as a blank or empty string.)
+
+# Step 1 - We first use the 'unique' command which prints out the unique values in the dataframe to identify how the missing values are coded. The embarked element is enclosed in square brackets.  
+# Step 2 - We replace the 'embarked' element missing values with S. We list the object 'embarked' which needs to be replaced by stating the dataframe followed by $ sign inside a square bracket. We then rerun the unique statement to understand the values in column 'embarked'. 
+```{r}
+titanic_edit<-titanic_original
+unique (titanic_edit["embarked"]) 
+titanic_edit$embarked[titanic_edit$embarked==""]<- "S"
+titanic_edit[, "embarked"]
+```
+
+# 2: Age
+# You'll notice that a lot of the values in the Age column are missing. While there are many ways to fill these missing values, using the mean or median of the rest of the values is quite common in such cases.
+#Calculate the mean of the Age column and use that value to populate the missing values.
+#Step 1 - We first print out the missing values. We state that if age is NA then print it out by using 'if.na' statement followed by dataframe$column enclosed in brackets. 
+#Step 2 - Using ifelse statement, if 'age' is coded as NA, then replace it with 0 else retain its original value as found in the titanic_edit 'age' column. Unless all the values are converted to numeric, mean cannot be calculated and mean will give out a value as NA. 
+# Step 3 - Now if 'age' column in titanic_edit is na, we need to replace only those values and not the entire age column. This is done by enclosing 'is.na' statement in a square bracket followed by the column name in brackets which will tell R to replace only those values which are NA for titanic_age and not the entire column. R will now replace only NA values with mean values. 
+```{r}
+is.na (titanic_edit$age)
+titanic_edit$age[is.na(titanic_edit$age)] <- mean(ifelse(is.na(titanic_edit$age),0,titanic_edit$age))
+titanic_edit$age
+```
+#Think about other ways you could have populated the missing values in the age column. Why would you pick any of those over the mean (or not)?
+#I would replace it with a mode probably but am not sure why!
+
+#3: Lifeboat
+#You're interested in looking at the distribution of passengers in different lifeboats, but as we know, many passengers did not make it to a boat :-( This means that there are a lot of missing values in the boat column. Fill these empty slots with a dummy value e.g. the string 'None' or 'NA'
+
+# Step 1 - This can be done using ifelse statement. Ifelse statement has the form (logical condition,true,false); if the iftest() is true meaning it has a missing variable where the string is denoted by "" without anything enclosed nor space, then it will be replaced with "Did not make", else it will retain its value from the boat column.
+
+```{r}
+titanic_edit$boat<-ifelse(titanic_edit$boat=="", "Did not make", titanic_edit$boat)
+```
+
+#4: Cabin
+#You notice that many passengers don't have a cabin number associated with them.
+#Does it make sense to fill missing cabin numbers with a value?
+#Not sure if I need to fill the missing cabin number with a value at the moment, I don't believe I'm ever going to add up the values meaning ever use it as a numeric variable. 
+
+#What does a missing value here mean?
+# Missing cabin data could be because they may be a family who were aboard. For people from same family, cabin number may be indicated for one of the member of the family instead of all members.
+
+#You have a hunch that the fact that the cabin number is missing might be a useful indicator of survival. Create a new column has_cabin_number which has 1 if there is a cabin number, and 0 otherwise.
+```{r}
+titanic_edit$has_cabin_number<-ifelse (titanic_edit$cabin=="",0,1)
+```
+
+6: Submit the project on Github
+Include your code, the original data as a CSV file titanic_original.csv, and the cleaned up data as a CSV file called titanic_clean.csv
+```{r}
+write.csv(titanic_edit, "C:\\Users\\srivats\\Desktop\\titanic_clean.csv")
+```
+
