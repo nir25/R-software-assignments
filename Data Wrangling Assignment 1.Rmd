@@ -1,0 +1,139 @@
+---
+title: "Data Wrangling Exercise 1"
+output: html_document
+---
+
+# Below is the code for assignment 1 by Nivedita Ravi. 
+
+
+# 0: Load the data in RStudio. Save the data set as a CSV file called refine_original.csv and load it in RStudio into a data frame.
+
+# Step 1 - Set the correct path to read in the saved csv file.
+
+```{r}
+refine_original <- read.csv("C:\\Users\\srivats\\Desktop\\refine_original.csv")
+```
+
+# 1: Clean up brand names. Clean up the 'company' column, so all of the misspellings of the brand names are standardized. For example, you can transform the values in the column to be: philips, akzo, van houten and unilever (all lowercase).
+
+# Step 1 - Installing the necessary packages for this assignment. Then using library, we can load the package "dplyr".  
+```{r}
+# install.packages ("dplyr")
+library(dplyr)
+```
+# Step 2 - Selecting the first column that I wish to change and printing it out
+```{r}
+refine_original[colnames(refine_original)[1]]
+```
+# Step 3 - Next, identifying all the elements which need to be transformed. The 'unique' command when used will print out those elements which have errors in them. 
+```{r}
+unique (refine_original["company"])
+```
+# Step 4 - To define the dataset. All the changes will be saved as 'refine_mutate'.   
+
+# Step 5 - Replace all the wrong spellings using the mutate command. In order to be able to identify the wrong elements, we will identify it using the 'address' to link it with the corresponding element. 
+```{r}
+refine_mutate<-refine_original %>%
+mutate(company=replace(company, address=="Groningensingel 147", "philips")) %>%
+mutate(company=replace(company, address=="Groningensingel 148", "philips")) %>% 
+mutate(company=replace(company, address=="Groningensingel 150", "philips")) %>% 
+mutate(company=replace(company, address=="Groningensingel 151", "philips")) %>% 
+mutate(company=replace(company, address=="Groningensingel 152", "philips")) %>% 
+mutate(company=replace(company, address=="Delfzijlstraat 54", "philips")) %>%  
+mutate(company=replace(company, address=="Delfzijlstraat 55", "philips")) %>%   
+mutate(company=replace(company, address=="Delfzijlstraat 56", "philips")) %>%   
+mutate(company=replace(company, address=="Leeuwardenweg 179", "akzo")) %>%  
+mutate(company=replace(company, address=="Leeuwardenweg 180", "akzo")) %>%  
+mutate(company=replace(company, address=="Leeuwardenweg 181", "akzo")) %>%  
+mutate(company=replace(company, address=="Leeuwardenweg 182", "akzo")) %>% 
+mutate(company=replace(company, address=="Delfzijlstraat 57", "van houten")) %>% 
+mutate(company=replace(company, address=="Delfzijlstraat 58", "van houten")) %>% 
+mutate(company=replace(company, address=="Delfzijlstraat 61", "van houten")) %>%
+mutate(company=replace(company, address=="Jourestraat 23", "unilever")) %>%
+mutate(company=replace(company, address=="Jourestraat 25", "unilever")) %>%
+as.data.frame(refine_mutate, row.names=NULL, optional=TRUE)
+```
+# Step 6- Print the changes that were made 
+
+```{r}
+refine_mutate
+```
+
+# Another method to modify the errors in the names: 
+
+#Step 1 - Using the 'grep' function. The grep function will search for matches in a particular column specified using a $ symbol after the dataframe. 
+
+```{r}
+refine_mutate<-refine_original
+refine_mutate$company[grep("er",refine_mutate$company)] <- "unilever"
+refine_mutate$company[grep("ten",refine_mutate$company)] <- "van houten"
+refine_mutate$company[grep("z",refine_mutate$company)] <- "akzo"
+refine_mutate$company[grep("A",refine_mutate$company)] <- "akzo"
+refine_mutate$company[grep("li",refine_mutate$company)] <- "philips"
+```
+
+# 2: Separate product code and number
+# Separate the product code and product number into separate columns i.e. add two new columns called product_code and product_number, containing the product code and number respectively. 
+
+# Step 1- Installing the necessary packages to run this. 
+```{r}
+# install.packages ("tidyr")
+library("tidyr")
+```
+# Step 2 - Using the 'separate' function yields the two new columns: Product_code and Product_number.  
+```{r}
+refine_mutate<-separate (refine_mutate, "Product.code...number", 
+          into=c("product_code", "product_number"), 
+          sep="-", remove=TRUE, convert=FALSE, extra="warn", fill="warn")
+```
+
+# 3: Add product categories
+# You learn that the product codes actually represent the following product categories:
+#p = Smartphone  v = TV   x = Laptop  q = Tablet
+#In order to make the data more readable, add a column with the product category for each record.
+
+#Step 1: Create a product_category column from the product_code column. categories. 
+# Step 2: Using the 'grep' function. The grep function will search for matches in the product_category column and replace it with a more readable product category. 
+
+```{r}
+refine_mutate$product_category<-refine_mutate$product_code
+refine_mutate$product_category[grep("p",refine_mutate$product_category)] <- "Smartphone"
+refine_mutate$product_category[grep("v",refine_mutate$product_category)] <- "TV"
+refine_mutate$product_category[grep("x",refine_mutate$product_category)] <- "Laptop"
+refine_mutate$product_category[grep("q",refine_mutate$product_category)] <- "Tablet"
+```
+
+# 4: Add full address for geocoding
+# You'd like to view the customer information on a map. In order to do that, the addresses need to be in a form that can be easily geocoded. Create a new column full_address that concatenates the three address fields (address, city, country), separated by commas.
+
+#Step 1 - Create a new variable called full_address using the 'paste' function. The paste function concatanates the vectors and in the separate option we add a comma in order to have the result in the format address,city,country. 
+```{r}
+refine_mutate$full_address <- paste(refine_mutate$address, refine_mutate$city, refine_mutate$country, sep = ",")
+```
+
+ 
+#5: Create dummy variables for company and product category
+# Both the company name and product category are categorical variables i.e. they take only a fixed set of values. In order to use them in further analysis you need to create dummy variables. Create dummy binary variables for each of them with the prefix company_ and product_ for company and product i.e.
+Add four binary (1 or 0) columns for company: company_philips, company_akzo, company_van_houten and company_unilever
+Add four binary (1 or 0) columns for product category: product_smartphone, product_tv, product_laptop and product_tablet
+
+
+#Step 1 - Create new dummy variables called company_philips, company_unilever, company_akzo, company_van_houten. 
+# This can be done using ifelse statement. 
+# ifelse statement has the form (logical condition,true,false); true is what the iftest() will return if the logical condition is true and false is what iftest() will return if the logical condition is false.   
+
+refine_mutate$company_philips <- ifelse(refine_mutate$company == "philips",1,0) 
+refine_mutate$company_unilever <- ifelse(refine_mutate$company == "unilever",1,0)
+refine_mutate$company_akzo <- ifelse(refine_mutate$company == "akzo",1,0)
+refine_mutate$company_van_houten <- ifelse(refine_mutate$company == "van houten",1,0)
+
+```{r}
+refine_mutate$product_smartphone<-ifelse(refine_mutate$product_category=="Smartphone",1,0)
+refine_mutate$product_tv<-ifelse(refine_mutate$product_category=="TV",1,0)
+refine_mutate$product_laptop<-ifelse(refine_mutate$product_category=="Laptop",1,0)
+refine_mutate$product_tablet<-ifelse(refine_mutate$product_category=="Tablet", 1, 0)
+```
+```{r}
+write.csv(refine_mutate, "C:\\Users\\srivats\\Desktop\\refine_clean.csv")
+```
+
