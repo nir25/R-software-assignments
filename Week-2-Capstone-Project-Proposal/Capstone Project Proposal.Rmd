@@ -1,0 +1,27 @@
+---
+title: "Capstone Project Proposal Report"
+author: "Nivedita Ravi"
+output: html_document
+---
+
+
+## What is the problem you want to solve?
+#### Adolescence demands for increased nutrition needs to accomodate for the various hormonal and emotional changes experienced by children. Food choices during adolescence persist into adulthood which govern long-term health. National and population-based surveys have found that adolescents often fail to meet dietary recommendations for overall nutritional status and for specific nutrient intakes. The major nutritional issues among this age group today are about overconsumption, poor dietary quality, and food choices. 
+
+#### The aim of this project is to examine the association of the adolescents' dietary habits with some of the factors associated with it including potential individual, parental, other social and environmental factors that are believed to influence their food choices.
+
+## Who is your client and why do they care about this problem? In other words, what will your client DO or DECIDE based on your analysis that they wouldn't have otherwise?
+#### This analysis will help several groups to promote measures that offer an ideal setting for delivering health promotion strategies: 
+#### 1. Schools - Schools  opportunities for students to learn about and practice healthy behaviors. Several hours every day is spent in the school premises and the health of a student is strongly linked to their academic success.This will help schools deliver nutritious school meals that comply with Dietary Guidelines. 
+#### 2. Families - Helps them understand where the adolescent diet could be going wrong and will help them make better food based decisions. 
+#### 3. Policy makers - Will help implement policies that prevent likely health threats associated with dietary habits. 
+
+## What data are you going to use for this? How will you acquire this data? In brief, outline your approach to solving this problem (knowing that this might change later).
+#### The dataset is available free of charge at http://cancercontrol.cancer.gov/brp/hbrb/flashe-files.aspx . 
+#### I expect to spend time applying the concepts I learnt in Data Wrangling to help narrow down on the variables of interest. The biggest step for me will be to create a scoring system to evaluate the Food Frequency Questinnaire before I start looking at associations with other variables. I will also need to conduct a correlation analysis and am currently reading about dimensionality reduction using PCA. I haven't come up with an analysis plan although I believe I will be using logistic regression methods to observe the associations.  
+
+
+
+
+## What are your deliverables? Typically, this would include code, along with a paper and/or a slide deck.
+#### I plan to turn in the project as a document with the codes and a report. 
